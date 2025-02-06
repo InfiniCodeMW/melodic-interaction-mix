@@ -4,27 +4,11 @@ const LyricsQuotes = () => {
   const quotes = [
     {
       id: 1,
-      lyrics: "Through the city lights, we chase our dreams tonight",
-      song: "City Dreams",
-      artist: "Sarah Chen",
-      meaning: "Represents the pursuit of ambitions in an urban landscape, reflecting the duo's journey in the music industry.",
-      story: "Written during a late-night studio session, inspired by the view of the city skyline from our recording booth."
-    },
-    {
-      id: 2,
-      lyrics: "Breaking barriers, no time for carriers, we're just warriors",
-      song: "No Limits",
-      artist: "Marcus Rodriguez",
-      meaning: "Speaks to overcoming obstacles and refusing to be limited by conventions or expectations.",
-      story: "This verse came to Marcus during a breakthrough moment after facing initial skepticism about our unique musical style."
-    },
-    {
-      id: 3,
-      lyrics: "Harmony in chaos, that's where we found our sound",
-      song: "Perfect Blend",
-      artist: "Sarah Chen & Marcus Rodriguez",
-      meaning: "Describes how txtduo's distinct style emerged from combining their different musical backgrounds.",
-      story: "Created during their first successful collaboration, capturing the moment they realized their unique chemistry."
+      lyrics: "I pay no mind to the drama, I'm tht boy Ruebx",
+      song: "Malawi Gin",
+      artist: "JYC9_JR",
+      meaning: "Speaks to avoiding drama.",
+      story: "some guy in uni we call him ruebx his name is ctual Rueben so every their is drama brewing he woul either disappear or not pay attention to it"
     }
   ];
 

@@ -4,16 +4,16 @@ import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 const ArtistSection = () => {
   const artists = [
     {
-      name: "Sarah Chen",
+      name: "Telvin Moore",
       role: "Singer",
-      description: "A classically trained vocalist with a modern R&B twist, Sarah brings soulful melodies and powerful vocals to txtduo.",
-      image: "/placeholder.svg"
+      description: "A classically trained vocalist with a modern R&B twist, Telvin Awesome brings soulful melodies and powerful vocals to Thxtduo.",
+      image: "/images/telvin.jpg"
     },
     {
-      name: "Marcus Rodriguez",
+      name: "JYC9_JR",
       role: "Rapper",
-      description: "With sharp lyrics and dynamic flow, Marcus adds the perfect hip-hop edge to complete txtduo's unique sound.",
-      image: "/placeholder.svg"
+      description: "With sharp lyrics and dynamic flow, JYC9_JR adds the perfect hip-hop edge to complete Thxtduo's unique sound.",
+      image: "/images/jyce.jpg"
     }
   ];
 
@@ -25,7 +25,7 @@ const ArtistSection = () => {
             Meet the Artists
           </h2>
           <p className="font-inter text-gray-400">
-            The voices and minds behind txtduo
+            The voices and minds behind ThxtDuo
           </p>
         </div>
 

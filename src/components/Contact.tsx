@@ -1,4 +1,4 @@
-import { Mail, Instagram, Twitter } from "lucide-react";
+import { Mail, Instagram, Twitter, Facebook,Youtube } from "lucide-react";
 
 const Contact = () => {
   const socialLinks = [
@@ -8,8 +8,18 @@ const Contact = () => {
       link: "https://instagram.com/txtduo",
     },
     {
+      name: "Facebook",
+      icon: Facebook,
+      link: "https://facebook.com/txtduo",
+    },
+    {
       name: "Twitter",
       icon: Twitter,
+      link: "https://twitter.com/txtduo",
+    },
+    {
+      name: "Youtube",
+      icon: Youtube,
       link: "https://twitter.com/txtduo",
     },
   ];
@@ -32,7 +42,7 @@ const Contact = () => {
             className="inline-flex items-center gap-2 bg-secondary hover:bg-secondary/90 text-white font-medium py-3 px-6 rounded-full transition-colors"
           >
             <Mail size={20} />
-            contact@txtduo.com
+            contact@thxtduo.com
           </a>
 
           <div className="flex gap-4">

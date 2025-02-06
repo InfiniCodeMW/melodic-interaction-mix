@@ -8,6 +8,7 @@ const Navigation = () => {
     { name: "Home", href: "#home" },
     { name: "Music", href: "#music" },
     { name: "Artists", href: "#artists" },
+    { name: "Blog", href: "#blog" },
     { name: "Contact", href: "#contact" },
   ];
 
@@ -16,7 +17,7 @@ const Navigation = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <div className="flex-shrink-0">
-            <span className="font-outfit text-2xl font-bold text-white">txtduo</span>
+            <span className="font-outfit text-2xl font-bold text-white">ThxtDuo</span>
           </div>
           
           {/* Desktop Navigation */}

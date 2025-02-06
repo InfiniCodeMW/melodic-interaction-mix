@@ -5,36 +5,23 @@ const MusicShowcase = () => {
     {
       name: "Spotify",
       icon: Music2,
-      link: "https://open.spotify.com/artist/txtduo",
+      link: "https://open.spotify.com/artist/0JscCO1qtw0Hul9WkxQlVk",
       color: "bg-green-500",
-      embedUrl: "https://open.spotify.com/embed/artist/txtduo"
+      embedUrl: "https://open.spotify.com/embed/artist/0JscCO1qtw0Hul9WkxQlVk?utm_source=generator"
     },
     {
       name: "Apple Music",
       icon: Music,
-      link: "https://music.apple.com/artist/txtduo",
+      link: "https://music.apple.com/us/artist/thxt-duo/1582268484",
       color: "bg-red-500",
-      embedUrl: "https://embed.music.apple.com/us/artist/txtduo"
+      embedUrl: "https://embed.music.apple.com/us/album/the-take-off/1713124967"
     },
     {
       name: "YouTube",
       icon: Youtube,
-      link: "https://youtube.com/txtduo",
+      link: "https://www.youtube.com/@thxtduo4028",
       color: "bg-red-600",
-      embedUrl: "https://www.youtube.com/embed/txtduo"
-    },
-    {
-      name: "SoundCloud",
-      icon: Cloud,
-      link: "https://soundcloud.com/txtduo",
-      color: "bg-orange-500",
-      embedUrl: "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/users/txtduo"
-    },
-    {
-      name: "Boomplay",
-      icon: Headphones,
-      link: "https://www.boomplay.com/artists/txtduo",
-      color: "bg-blue-500"
+      embedUrl: "https://www.youtube.com/embed/b--cUrkN7Lk"
     }
   ];
 
@@ -76,12 +63,14 @@ const MusicShowcase = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-12">
           {platforms.slice(0, 2).map((platform) => platform.embedUrl && (
-            <div key={`${platform.name}-embed`} className="w-full aspect-video bg-gray-800 rounded-xl overflow-hidden">
+            <div key={`${platform.name}-embed`} className="w-full h-[352px] aspect-video bg-gray-800 rounded-xl overflow-hidden">
               <iframe
                 src={platform.embedUrl}
                 title={`${platform.name} Player`}
                 className="w-full h-full border-0"
+                sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-storage-access-by-user-activation allow-top-navigation-by-user-activation"
                 allow="autoplay; encrypted-media"
+                loading="lazy"
                 allowFullScreen
               />
             </div>
@@ -93,3 +82,7 @@ const MusicShowcase = () => {
 };
 
 export default MusicShowcase;
+
+
+
+
