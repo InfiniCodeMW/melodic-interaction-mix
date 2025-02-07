@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
 
 const LyricsQuotes = () => {
@@ -16,7 +15,7 @@ const LyricsQuotes = () => {
   return (
     <section className="py-20 bg-gray-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12 animate-fade-up">
+        <div className="text-center mb-12">
           <h2 className="font-outfit text-4xl font-bold text-white mb-4">
             Behind the Lyrics
           </h2>
@@ -26,15 +25,8 @@ const LyricsQuotes = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {quotes.map((quote, index) => (
-            <Card 
-              key={quote.id} 
-              className="bg-gray-900 border-gray-700 transform hover:scale-105 transition-all duration-300"
-              style={{
-                animation: `fade-in 0.5s ease-out forwards ${index * 0.2}s`,
-                opacity: 0
-              }}
-            >
+          {quotes.map((quote) => (
+            <Card key={quote.id} className="bg-gray-900 border-gray-700">
               <CardHeader>
                 <CardTitle className="text-white text-xl">"{quote.lyrics}"</CardTitle>
                 <CardDescription className="text-gray-400">

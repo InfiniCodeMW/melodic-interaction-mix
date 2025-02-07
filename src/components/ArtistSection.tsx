@@ -1,4 +1,3 @@
-
 import { User } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 
@@ -21,7 +20,7 @@ const ArtistSection = () => {
   return (
     <section id="artists" className="py-20 bg-gray-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12 animate-fade-up">
+        <div className="text-center mb-12">
           <h2 className="font-outfit text-4xl font-bold text-white mb-4">
             Meet the Artists
           </h2>
@@ -31,16 +30,9 @@ const ArtistSection = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-12">
-          {artists.map((artist, index) => (
-            <div 
-              key={artist.name} 
-              className="bg-gray-800 rounded-xl p-6 flex flex-col items-center text-center transform hover:scale-105 transition-all duration-300"
-              style={{
-                animation: `fade-in 0.5s ease-out forwards ${index * 0.2}s`,
-                opacity: 0
-              }}
-            >
-              <Avatar className="w-32 h-32 mb-6 hover:scale-110 transition-transform duration-300">
+          {artists.map((artist) => (
+            <div key={artist.name} className="bg-gray-800 rounded-xl p-6 flex flex-col items-center text-center">
+              <Avatar className="w-32 h-32 mb-6">
                 <AvatarImage src={artist.image} alt={artist.name} />
                 <AvatarFallback>
                   <User className="w-12 h-12" />
