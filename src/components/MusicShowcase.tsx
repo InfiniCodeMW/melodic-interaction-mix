@@ -34,7 +34,7 @@ const MusicShowcase = () => {
             Discover Our Music
           </h2>
           <p className="font-inter text-gray-400">
-            Explore our latest and greatest tracks across all streaming platforms
+            Listen to our latest tracks and get a taste of our sound
           </p>
         </div>
 
@@ -63,11 +63,11 @@ const MusicShowcase = () => {
           ))}
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-12">
-          {platforms.slice(0, 2).map((platform, index) => platform.embedUrl && (
+        <div className="grid grid-cols-1 gap-8 mt-12">
+          {platforms.map((platform, index) => platform.embedUrl && (
             <div 
               key={`${platform.name}-embed`} 
-              className="w-full h-[352px] aspect-video bg-gray-800/50 backdrop-blur-sm rounded-xl overflow-hidden transition-transform hover:scale-[1.02] animate-fade-up"
+              className="w-full h-[352px] bg-gray-800/50 backdrop-blur-sm rounded-xl overflow-hidden transition-transform hover:scale-[1.02] animate-fade-up"
               style={{ animationDelay: `${(index + 3) * 150}ms` }}
             >
               <iframe
