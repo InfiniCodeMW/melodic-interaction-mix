@@ -1,4 +1,5 @@
-import { Music2, Youtube, Cloud, Music, Headphones } from "lucide-react";
+
+import { Music2, Youtube, Music, Headphones } from "lucide-react";
 
 const MusicShowcase = () => {
   const platforms = [
@@ -26,10 +27,10 @@ const MusicShowcase = () => {
   ];
 
   return (
-    <section id="music" className="py-20 bg-gray-900">
+    <section id="music" className="py-20 bg-gradient-to-b from-gray-900 to-primary">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12 animate-fade-up">
-          <h2 className="font-outfit text-4xl font-bold text-white mb-4">
+          <h2 className="font-outfit text-4xl font-bold text-white mb-4 hover:scale-105 transition-transform duration-300">
             Discover Our Music
           </h2>
           <p className="font-inter text-gray-400">
@@ -38,19 +39,20 @@ const MusicShowcase = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-          {platforms.map((platform) => (
+          {platforms.map((platform, index) => (
             <a
               key={platform.name}
               href={platform.link}
               target="_blank"
               rel="noopener noreferrer"
-              className="group relative overflow-hidden rounded-xl bg-gray-800 p-6 transition-transform hover:-translate-y-1"
+              className="group relative overflow-hidden rounded-xl bg-gray-800/50 backdrop-blur-sm p-6 transition-all duration-300 hover:-translate-y-2 hover:shadow-xl hover:shadow-secondary/20 animate-fade-up"
+              style={{ animationDelay: `${index * 150}ms` }}
             >
               <div className="flex items-center gap-4">
-                <div className={`${platform.color} p-3 rounded-lg`}>
+                <div className={`${platform.color} p-3 rounded-lg transition-transform group-hover:scale-110`}>
                   <platform.icon className="w-6 h-6 text-white" />
                 </div>
-                <h3 className="font-outfit text-xl font-semibold text-white">
+                <h3 className="font-outfit text-xl font-semibold text-white group-hover:text-secondary transition-colors">
                   {platform.name}
                 </h3>
               </div>
@@ -62,8 +64,12 @@ const MusicShowcase = () => {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-12">
-          {platforms.slice(0, 2).map((platform) => platform.embedUrl && (
-            <div key={`${platform.name}-embed`} className="w-full h-[352px] aspect-video bg-gray-800 rounded-xl overflow-hidden">
+          {platforms.slice(0, 2).map((platform, index) => platform.embedUrl && (
+            <div 
+              key={`${platform.name}-embed`} 
+              className="w-full h-[352px] aspect-video bg-gray-800/50 backdrop-blur-sm rounded-xl overflow-hidden transition-transform hover:scale-[1.02] animate-fade-up"
+              style={{ animationDelay: `${(index + 3) * 150}ms` }}
+            >
               <iframe
                 src={platform.embedUrl}
                 title={`${platform.name} Player`}
@@ -82,7 +88,3 @@ const MusicShowcase = () => {
 };
 
 export default MusicShowcase;
-
-
-
-
