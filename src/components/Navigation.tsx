@@ -1,5 +1,7 @@
+
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -32,6 +34,12 @@ const Navigation = () => {
                   {item.name}
                 </a>
               ))}
+              <Link
+                to="/auth"
+                className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors"
+              >
+                Login
+              </Link>
             </div>
           </div>
           
@@ -61,6 +69,13 @@ const Navigation = () => {
                 {item.name}
               </a>
             ))}
+            <Link
+              to="/auth"
+              className="text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
+              onClick={() => setIsOpen(false)}
+            >
+              Login
+            </Link>
           </div>
         </div>
       )}
