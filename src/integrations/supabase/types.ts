@@ -9,7 +9,96 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      admin_users: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          is_super_admin: boolean | null
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id: string
+          is_super_admin?: boolean | null
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          is_super_admin?: boolean | null
+        }
+        Relationships: []
+      }
+      blog_posts: {
+        Row: {
+          author: string
+          content: string
+          created_at: string
+          excerpt: string
+          id: string
+          image_url: string | null
+          published: boolean | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          author: string
+          content: string
+          created_at?: string
+          excerpt: string
+          id?: string
+          image_url?: string | null
+          published?: boolean | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          author?: string
+          content?: string
+          created_at?: string
+          excerpt?: string
+          id?: string
+          image_url?: string | null
+          published?: boolean | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      lyrics_quotes: {
+        Row: {
+          artist: string
+          created_at: string
+          id: string
+          lyrics: string
+          meaning: string | null
+          song: string
+          story: string | null
+          updated_at: string
+        }
+        Insert: {
+          artist: string
+          created_at?: string
+          id?: string
+          lyrics: string
+          meaning?: string | null
+          song: string
+          story?: string | null
+          updated_at?: string
+        }
+        Update: {
+          artist?: string
+          created_at?: string
+          id?: string
+          lyrics?: string
+          meaning?: string | null
+          song?: string
+          story?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
