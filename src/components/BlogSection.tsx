@@ -26,16 +26,16 @@ const BlogSection = () => {
         .from('blog_post_details')
         .select(`
           *,
-          likes (count),
-          comments (count)
+          likes:likes(count),
+          comments:comments(*)
         `)
         .order('created_at', { ascending: false });
-
+  
       if (error) throw error;
       return data;
     },
   });
-
+  
   const likeMutation = useMutation({
     mutationFn: async ({ postId }: { postId: string }) => {
       const ip = await getClientIp();
@@ -203,7 +203,7 @@ const BlogSection = () => {
                     </button>
                     <div className="flex items-center">
                       <MessageSquare className="h-4 w-4 mr-1" />
-                      <span>{post.comments?.[0]?.count || 0}</span>
+                      <span>{post.comments?.length || 0}</span>
                     </div>
                   </div>
                   <Button 
@@ -246,7 +246,27 @@ const BlogSection = () => {
               <div className="prose prose-invert max-w-none">
                 <p className="text-gray-300 whitespace-pre-wrap">{selectedPost.content}</p>
               </div>
-              
+
+              {/* Comments Display Section */}
+<div className="mt-8 pt-4 border-t border-gray-700">
+  <h4 className="text-lg font-semibold text-white mb-4">Comments</h4>
+  {selectedPost.comments?.length > 0 ? (
+    <div className="space-y-4">
+      {selectedPost.comments.map((comment) => (
+        <div key={comment.id} className="border border-gray-700 rounded-lg p-4 bg-gray-800">
+          <div className="flex justify-between items-center mb-2">
+            <span className="text-sm text-gray-400">{comment.guest_name || "Anonymous"}</span>
+            <span className="text-xs text-gray-500">{new Date(comment.created_at).toLocaleDateString()}</span>
+          </div>
+          <p className="text-gray-300">{comment.content}</p>
+        </div>
+      ))}
+    </div>
+  ) : (
+    <p className="text-gray-400">No comments yet. Be the first to comment!</p>
+  )}
+</div>
+
               {/* Comments Section */}
               <div className="mt-8 pt-4 border-t border-gray-700">
                 <h4 className="text-lg font-semibold text-white mb-4">Leave a Comment</h4>
