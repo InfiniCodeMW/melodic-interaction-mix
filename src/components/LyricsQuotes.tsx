@@ -1,4 +1,3 @@
-
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
 import { Skeleton } from "./ui/skeleton";
@@ -13,8 +12,7 @@ const LyricsQuotes = () => {
         .select(`
           *,
           likes (count),
-          comments (count),
-          profiles (username)
+          comments (count)
         `)
         .order('created_at', { ascending: false });
 
@@ -95,11 +93,6 @@ const LyricsQuotes = () => {
                     <span className="text-sm text-gray-400">
                       {quote.likes?.[0]?.count || 0} likes • {quote.comments?.[0]?.count || 0} comments
                     </span>
-                    {quote.profiles?.username && (
-                      <span className="text-sm text-secondary">
-                        Posted by {quote.profiles.username}
-                      </span>
-                    )}
                   </div>
                 </div>
               </CardContent>

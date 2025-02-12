@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
@@ -19,8 +18,7 @@ const BlogSection = () => {
         .select(`
           *,
           likes (count),
-          comments (count),
-          profiles (username, avatar_url)
+          comments (count)
         `)
         .order('created_at', { ascending: false });
 
