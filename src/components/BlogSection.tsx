@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
@@ -14,7 +15,7 @@ const BlogSection = () => {
     queryKey: ['blog-posts'],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from('blog_posts')
+        .from('blog_post_details')
         .select(`
           *,
           likes (count),
@@ -94,7 +95,7 @@ const BlogSection = () => {
               <CardHeader>
                 <CardTitle className="text-white">{post.title}</CardTitle>
                 <CardDescription className="text-gray-400">
-                  {new Date(post.created_at).toLocaleDateString()} • By {post.author}
+                  {new Date(post.created_at).toLocaleDateString()} • By {post.admin_email || 'Anonymous'}
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -138,7 +139,7 @@ const BlogSection = () => {
               <div className="flex items-center space-x-2 text-gray-400 mb-4">
                 <span>{new Date(selectedPost.created_at).toLocaleDateString()}</span>
                 <span>•</span>
-                <span>By {selectedPost.author}</span>
+                <span>By {selectedPost.admin_email || 'Anonymous'}</span>
               </div>
               {selectedPost.image_url && (
                 <img 

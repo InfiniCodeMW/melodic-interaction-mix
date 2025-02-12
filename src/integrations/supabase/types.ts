@@ -32,6 +32,7 @@ export type Database = {
       }
       blog_posts: {
         Row: {
+          admin_user_id: string | null
           author: string
           content: string
           created_at: string
@@ -44,6 +45,7 @@ export type Database = {
           views_count: number | null
         }
         Insert: {
+          admin_user_id?: string | null
           author: string
           content: string
           created_at?: string
@@ -56,6 +58,7 @@ export type Database = {
           views_count?: number | null
         }
         Update: {
+          admin_user_id?: string | null
           author?: string
           content?: string
           created_at?: string
@@ -67,7 +70,15 @@ export type Database = {
           updated_at?: string
           views_count?: number | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "blog_posts_admin_user_id_fkey"
+            columns: ["admin_user_id"]
+            isOneToOne: false
+            referencedRelation: "admin_users"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       comments: {
         Row: {
@@ -102,7 +113,21 @@ export type Database = {
             foreignKeyName: "comments_blog_post_id_fkey"
             columns: ["blog_post_id"]
             isOneToOne: false
+            referencedRelation: "blog_post_details"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "comments_blog_post_id_fkey"
+            columns: ["blog_post_id"]
+            isOneToOne: false
             referencedRelation: "blog_posts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "comments_lyrics_quote_id_fkey"
+            columns: ["lyrics_quote_id"]
+            isOneToOne: false
+            referencedRelation: "lyrics_quote_details"
             referencedColumns: ["id"]
           },
           {
@@ -148,7 +173,21 @@ export type Database = {
             foreignKeyName: "likes_blog_post_id_fkey"
             columns: ["blog_post_id"]
             isOneToOne: false
+            referencedRelation: "blog_post_details"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "likes_blog_post_id_fkey"
+            columns: ["blog_post_id"]
+            isOneToOne: false
             referencedRelation: "blog_posts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "likes_lyrics_quote_id_fkey"
+            columns: ["lyrics_quote_id"]
+            isOneToOne: false
+            referencedRelation: "lyrics_quote_details"
             referencedColumns: ["id"]
           },
           {
@@ -169,6 +208,7 @@ export type Database = {
       }
       lyrics_quotes: {
         Row: {
+          admin_user_id: string | null
           artist: string
           created_at: string
           id: string
@@ -181,6 +221,7 @@ export type Database = {
           views_count: number | null
         }
         Insert: {
+          admin_user_id?: string | null
           artist: string
           created_at?: string
           id?: string
@@ -193,6 +234,7 @@ export type Database = {
           views_count?: number | null
         }
         Update: {
+          admin_user_id?: string | null
           artist?: string
           created_at?: string
           id?: string
@@ -204,7 +246,15 @@ export type Database = {
           updated_at?: string
           views_count?: number | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "lyrics_quotes_admin_user_id_fkey"
+            columns: ["admin_user_id"]
+            isOneToOne: false
+            referencedRelation: "admin_users"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {
@@ -238,7 +288,56 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      blog_post_details: {
+        Row: {
+          admin_email: string | null
+          admin_user_id: string | null
+          author: string | null
+          content: string | null
+          created_at: string | null
+          excerpt: string | null
+          id: string | null
+          image_url: string | null
+          published: boolean | null
+          title: string | null
+          updated_at: string | null
+          views_count: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "blog_posts_admin_user_id_fkey"
+            columns: ["admin_user_id"]
+            isOneToOne: false
+            referencedRelation: "admin_users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      lyrics_quote_details: {
+        Row: {
+          admin_email: string | null
+          admin_user_id: string | null
+          artist: string | null
+          created_at: string | null
+          id: string | null
+          image_url: string | null
+          lyrics: string | null
+          meaning: string | null
+          song: string | null
+          story: string | null
+          updated_at: string | null
+          views_count: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lyrics_quotes_admin_user_id_fkey"
+            columns: ["admin_user_id"]
+            isOneToOne: false
+            referencedRelation: "admin_users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
       [_ in never]: never

@@ -1,3 +1,4 @@
+
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
 import { Skeleton } from "./ui/skeleton";
@@ -8,7 +9,7 @@ const LyricsQuotes = () => {
     queryKey: ['lyrics-quotes'],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from('lyrics_quotes')
+        .from('lyrics_quote_details')
         .select(`
           *,
           likes (count),
@@ -93,6 +94,11 @@ const LyricsQuotes = () => {
                     <span className="text-sm text-gray-400">
                       {quote.likes?.[0]?.count || 0} likes • {quote.comments?.[0]?.count || 0} comments
                     </span>
+                    {quote.admin_email && (
+                      <span className="text-sm text-secondary">
+                        Posted by {quote.admin_email}
+                      </span>
+                    )}
                   </div>
                 </div>
               </CardContent>
