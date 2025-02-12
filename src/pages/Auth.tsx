@@ -35,7 +35,22 @@ const Auth = () => {
           password,
         });
         if (error) throw error;
-        navigate("/");
+
+        // Check if user is admin
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          const { data: adminUser } = await supabase
+            .from("admin_users")
+            .select("*")
+            .eq("id", user.id)
+            .single();
+
+          if (adminUser) {
+            navigate("/dashboard");
+          } else {
+            navigate("/");
+          }
+        }
       }
     } catch (error: any) {
       toast({
