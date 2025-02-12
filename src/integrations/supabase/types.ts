@@ -41,6 +41,7 @@ export type Database = {
           published: boolean | null
           title: string
           updated_at: string
+          views_count: number | null
         }
         Insert: {
           author: string
@@ -52,6 +53,7 @@ export type Database = {
           published?: boolean | null
           title: string
           updated_at?: string
+          views_count?: number | null
         }
         Update: {
           author?: string
@@ -63,39 +65,174 @@ export type Database = {
           published?: boolean | null
           title?: string
           updated_at?: string
+          views_count?: number | null
         }
         Relationships: []
+      }
+      comments: {
+        Row: {
+          blog_post_id: string | null
+          content: string
+          created_at: string
+          id: string
+          lyrics_quote_id: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          blog_post_id?: string | null
+          content: string
+          created_at?: string
+          id?: string
+          lyrics_quote_id?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          blog_post_id?: string | null
+          content?: string
+          created_at?: string
+          id?: string
+          lyrics_quote_id?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "comments_blog_post_id_fkey"
+            columns: ["blog_post_id"]
+            isOneToOne: false
+            referencedRelation: "blog_posts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "comments_lyrics_quote_id_fkey"
+            columns: ["lyrics_quote_id"]
+            isOneToOne: false
+            referencedRelation: "lyrics_quotes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "comments_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      likes: {
+        Row: {
+          blog_post_id: string | null
+          created_at: string
+          id: string
+          lyrics_quote_id: string | null
+          user_id: string
+        }
+        Insert: {
+          blog_post_id?: string | null
+          created_at?: string
+          id?: string
+          lyrics_quote_id?: string | null
+          user_id: string
+        }
+        Update: {
+          blog_post_id?: string | null
+          created_at?: string
+          id?: string
+          lyrics_quote_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "likes_blog_post_id_fkey"
+            columns: ["blog_post_id"]
+            isOneToOne: false
+            referencedRelation: "blog_posts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "likes_lyrics_quote_id_fkey"
+            columns: ["lyrics_quote_id"]
+            isOneToOne: false
+            referencedRelation: "lyrics_quotes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "likes_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       lyrics_quotes: {
         Row: {
           artist: string
           created_at: string
           id: string
+          image_url: string | null
           lyrics: string
           meaning: string | null
           song: string
           story: string | null
           updated_at: string
+          views_count: number | null
         }
         Insert: {
           artist: string
           created_at?: string
           id?: string
+          image_url?: string | null
           lyrics: string
           meaning?: string | null
           song: string
           story?: string | null
           updated_at?: string
+          views_count?: number | null
         }
         Update: {
           artist?: string
           created_at?: string
           id?: string
+          image_url?: string | null
           lyrics?: string
           meaning?: string | null
           song?: string
           story?: string | null
           updated_at?: string
+          views_count?: number | null
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          bio: string | null
+          created_at: string
+          full_name: string | null
+          id: string
+          updated_at: string
+          username: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string
+          full_name?: string | null
+          id: string
+          updated_at?: string
+          username?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string
+          full_name?: string | null
+          id?: string
+          updated_at?: string
+          username?: string | null
         }
         Relationships: []
       }
