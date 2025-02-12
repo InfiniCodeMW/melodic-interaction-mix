@@ -1,15 +1,23 @@
 
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
 import { Button } from "./ui/button";
-import { ArrowRight, X, Heart, MessageSquare } from "lucide-react";
+import { ArrowRight, X, Heart, MessageSquare, Send } from "lucide-react";
 import { Skeleton } from "./ui/skeleton";
+import { Input } from "./ui/input";
+import { Textarea } from "./ui/textarea";
+import { useToast } from "./ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { getClientIp } from "@/utils/ipAddress";
 
 const BlogSection = () => {
   const [selectedPost, setSelectedPost] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [comment, setComment] = useState("");
+  const [guestName, setGuestName] = useState("");
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
 
   const { data: posts, isLoading } = useQuery({
     queryKey: ['blog-posts'],
@@ -28,6 +36,88 @@ const BlogSection = () => {
     },
   });
 
+  const likeMutation = useMutation({
+    mutationFn: async ({ postId }: { postId: string }) => {
+      const ip = await getClientIp();
+      const { error } = await supabase
+        .from('likes')
+        .insert({ blog_post_id: postId, device_ip: ip });
+      
+      if (error && error.code === '23505') {
+        // Unique constraint violation - user already liked
+        await supabase
+          .from('likes')
+          .delete()
+          .match({ blog_post_id: postId, device_ip: ip });
+      } else if (error) {
+        throw error;
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['blog-posts'] });
+    },
+    onError: (error) => {
+      toast({
+        title: "Error",
+        description: "Failed to update like status",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const commentMutation = useMutation({
+    mutationFn: async ({ postId, content, guestName }: { postId: string; content: string; guestName: string }) => {
+      const ip = await getClientIp();
+      const { error } = await supabase
+        .from('comments')
+        .insert({
+          blog_post_id: postId,
+          content,
+          device_ip: ip,
+          guest_name: guestName,
+        });
+
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['blog-posts'] });
+      setComment("");
+      setGuestName("");
+      toast({
+        title: "Success",
+        description: "Comment posted successfully!",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Error",
+        description: "Failed to post comment",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleLike = async (postId: string) => {
+    likeMutation.mutate({ postId });
+  };
+
+  const handleComment = async (postId: string) => {
+    if (!comment.trim() || !guestName.trim()) {
+      toast({
+        title: "Error",
+        description: "Please provide both a name and a comment",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    commentMutation.mutate({
+      postId,
+      content: comment,
+      guestName: guestName,
+    });
+  };
+
   const openModal = (post) => {
     setSelectedPost(post);
     setIsModalOpen(true);
@@ -36,6 +126,8 @@ const BlogSection = () => {
   const closeModal = () => {
     setSelectedPost(null);
     setIsModalOpen(false);
+    setComment("");
+    setGuestName("");
   };
 
   if (isLoading) {
@@ -102,10 +194,13 @@ const BlogSection = () => {
                 <p className="text-gray-300 mb-4">{post.excerpt}</p>
                 <div className="flex justify-between items-center">
                   <div className="flex items-center space-x-4 text-gray-400">
-                    <div className="flex items-center">
+                    <button 
+                      onClick={() => handleLike(post.id)}
+                      className="flex items-center hover:text-secondary transition-colors"
+                    >
                       <Heart className="h-4 w-4 mr-1" />
                       <span>{post.likes?.[0]?.count || 0}</span>
-                    </div>
+                    </button>
                     <div className="flex items-center">
                       <MessageSquare className="h-4 w-4 mr-1" />
                       <span>{post.comments?.[0]?.count || 0}</span>
@@ -151,17 +246,40 @@ const BlogSection = () => {
               <div className="prose prose-invert max-w-none">
                 <p className="text-gray-300 whitespace-pre-wrap">{selectedPost.content}</p>
               </div>
-              <div className="flex items-center justify-between mt-6 pt-4 border-t border-gray-700">
-                <div className="flex items-center space-x-4 text-gray-400">
-                  <div className="flex items-center">
-                    <Heart className="h-4 w-4 mr-1" />
-                    <span>{selectedPost.likes?.[0]?.count || 0} likes</span>
-                  </div>
-                  <div className="flex items-center">
-                    <MessageSquare className="h-4 w-4 mr-1" />
-                    <span>{selectedPost.comments?.[0]?.count || 0} comments</span>
-                  </div>
+              
+              {/* Comments Section */}
+              <div className="mt-8 pt-4 border-t border-gray-700">
+                <h4 className="text-lg font-semibold text-white mb-4">Leave a Comment</h4>
+                <div className="space-y-4">
+                  <Input
+                    placeholder="Your Name"
+                    value={guestName}
+                    onChange={(e) => setGuestName(e.target.value)}
+                    className="bg-gray-800 border-gray-700 text-white"
+                  />
+                  <Textarea
+                    placeholder="Write your comment..."
+                    value={comment}
+                    onChange={(e) => setComment(e.target.value)}
+                    className="bg-gray-800 border-gray-700 text-white"
+                  />
+                  <Button 
+                    onClick={() => handleComment(selectedPost.id)}
+                    className="w-full"
+                  >
+                    Post Comment <Send className="ml-2 h-4 w-4" />
+                  </Button>
                 </div>
+              </div>
+
+              <div className="flex items-center justify-between mt-6 pt-4 border-t border-gray-700">
+                <button 
+                  onClick={() => handleLike(selectedPost.id)}
+                  className="flex items-center text-gray-400 hover:text-secondary transition-colors"
+                >
+                  <Heart className="h-4 w-4 mr-1" />
+                  <span>{selectedPost.likes?.[0]?.count || 0} likes</span>
+                </button>
                 <Button onClick={closeModal}>Close</Button>
               </div>
             </div>

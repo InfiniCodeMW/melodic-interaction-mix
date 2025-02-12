@@ -85,28 +85,34 @@ export type Database = {
           blog_post_id: string | null
           content: string
           created_at: string
+          device_ip: string | null
+          guest_name: string | null
           id: string
           lyrics_quote_id: string | null
           updated_at: string
-          user_id: string
+          user_id: string | null
         }
         Insert: {
           blog_post_id?: string | null
           content: string
           created_at?: string
+          device_ip?: string | null
+          guest_name?: string | null
           id?: string
           lyrics_quote_id?: string | null
           updated_at?: string
-          user_id: string
+          user_id?: string | null
         }
         Update: {
           blog_post_id?: string | null
           content?: string
           created_at?: string
+          device_ip?: string | null
+          guest_name?: string | null
           id?: string
           lyrics_quote_id?: string | null
           updated_at?: string
-          user_id?: string
+          user_id?: string | null
         }
         Relationships: [
           {
@@ -150,23 +156,26 @@ export type Database = {
         Row: {
           blog_post_id: string | null
           created_at: string
+          device_ip: string | null
           id: string
           lyrics_quote_id: string | null
-          user_id: string
+          user_id: string | null
         }
         Insert: {
           blog_post_id?: string | null
           created_at?: string
+          device_ip?: string | null
           id?: string
           lyrics_quote_id?: string | null
-          user_id: string
+          user_id?: string | null
         }
         Update: {
           blog_post_id?: string | null
           created_at?: string
+          device_ip?: string | null
           id?: string
           lyrics_quote_id?: string | null
-          user_id?: string
+          user_id?: string | null
         }
         Relationships: [
           {
