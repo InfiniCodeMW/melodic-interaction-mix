@@ -23,10 +23,12 @@ interface Comment {
   reviewed_by: string | null;
   updated_at: string;
   profiles?: {
-    email: string | null;
+    id?: string;
+    email?: string | null;
   } | null;
   blog_posts?: {
-    title: string;
+    id?: string;
+    title?: string | null;
   } | null;
 }
 
@@ -71,9 +73,11 @@ const Comments = () => {
         .select(`
           *,
           profiles (
+            id,
             email
           ),
           blog_posts (
+            id,
             title
           )
         `)
@@ -153,7 +157,7 @@ const Comments = () => {
                     </CardHeader>
                     <CardContent>
                       <p className="text-white">{comment.content}</p>
-                      {comment.blog_posts && (
+                      {comment.blog_posts?.title && (
                         <p className="mt-2 text-sm text-gray-400">
                           On post: {comment.blog_posts.title}
                         </p>
