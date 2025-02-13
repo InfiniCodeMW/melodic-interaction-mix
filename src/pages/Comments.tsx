@@ -13,11 +13,21 @@ interface Comment {
   id: string;
   content: string;
   created_at: string;
-  user_id: string;
-  post_id: string;
-  approved: boolean;
-  user_email?: string;
-  post_title?: string;
+  user_id: string | null;
+  blog_post_id: string | null;
+  lyrics_quote_id: string | null;
+  approved: boolean | null;
+  guest_name: string | null;
+  device_ip: string | null;
+  reviewed_at: string | null;
+  reviewed_by: string | null;
+  updated_at: string;
+  profiles?: {
+    email: string | null;
+  } | null;
+  blog_posts?: {
+    title: string;
+  } | null;
 }
 
 const Comments = () => {
@@ -56,22 +66,22 @@ const Comments = () => {
 
   const fetchComments = async () => {
     try {
-      const { data: comments, error } = await supabase
+      const { data, error } = await supabase
         .from("comments")
         .select(`
           *,
-          profiles:user_id (email),
-          blog_posts:post_id (title)
+          profiles (
+            email
+          ),
+          blog_posts (
+            title
+          )
         `)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
 
-      setComments(comments.map(comment => ({
-        ...comment,
-        user_email: comment.profiles?.email,
-        post_title: comment.blog_posts?.title
-      })));
+      setComments(data || []);
     } catch (error: any) {
       toast({
         title: "Error",
@@ -129,7 +139,9 @@ const Comments = () => {
                     <CardHeader>
                       <div className="flex items-center justify-between">
                         <div>
-                          <CardTitle className="text-white">{comment.user_email}</CardTitle>
+                          <CardTitle className="text-white">
+                            {comment.profiles?.email || comment.guest_name || 'Anonymous'}
+                          </CardTitle>
                           <CardDescription>
                             {format(new Date(comment.created_at), "PPP")}
                           </CardDescription>
@@ -141,9 +153,11 @@ const Comments = () => {
                     </CardHeader>
                     <CardContent>
                       <p className="text-white">{comment.content}</p>
-                      <p className="mt-2 text-sm text-gray-400">
-                        On post: {comment.post_title}
-                      </p>
+                      {comment.blog_posts && (
+                        <p className="mt-2 text-sm text-gray-400">
+                          On post: {comment.blog_posts.title}
+                        </p>
+                      )}
                     </CardContent>
                     <CardFooter className="flex justify-end space-x-2">
                       {!comment.approved && (
