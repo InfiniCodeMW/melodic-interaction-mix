@@ -82,6 +82,7 @@ export type Database = {
       }
       comments: {
         Row: {
+          approved: boolean | null
           blog_post_id: string | null
           content: string
           created_at: string
@@ -89,10 +90,13 @@ export type Database = {
           guest_name: string | null
           id: string
           lyrics_quote_id: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
           updated_at: string
           user_id: string | null
         }
         Insert: {
+          approved?: boolean | null
           blog_post_id?: string | null
           content: string
           created_at?: string
@@ -100,10 +104,13 @@ export type Database = {
           guest_name?: string | null
           id?: string
           lyrics_quote_id?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
           updated_at?: string
           user_id?: string | null
         }
         Update: {
+          approved?: boolean | null
           blog_post_id?: string | null
           content?: string
           created_at?: string
@@ -111,6 +118,8 @@ export type Database = {
           guest_name?: string | null
           id?: string
           lyrics_quote_id?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
           updated_at?: string
           user_id?: string | null
         }
@@ -141,6 +150,13 @@ export type Database = {
             columns: ["lyrics_quote_id"]
             isOneToOne: false
             referencedRelation: "lyrics_quotes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "comments_reviewed_by_fkey"
+            columns: ["reviewed_by"]
+            isOneToOne: false
+            referencedRelation: "admin_users"
             referencedColumns: ["id"]
           },
           {
