@@ -24,7 +24,8 @@ interface Comment {
   updated_at: string;
   profiles?: {
     id?: string;
-    email?: string | null;
+    username?: string | null;
+    full_name?: string | null;
   } | null;
   blog_posts?: {
     id?: string;
@@ -74,7 +75,8 @@ const Comments = () => {
           *,
           profiles (
             id,
-            email
+            username,
+            full_name
           ),
           blog_posts (
             id,
@@ -144,7 +146,7 @@ const Comments = () => {
                       <div className="flex items-center justify-between">
                         <div>
                           <CardTitle className="text-white">
-                            {comment.profiles?.email || comment.guest_name || 'Anonymous'}
+                            {comment.profiles?.username || comment.profiles?.full_name || comment.guest_name || 'Anonymous'}
                           </CardTitle>
                           <CardDescription>
                             {format(new Date(comment.created_at), "PPP")}
