@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
@@ -15,6 +14,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Skeleton } from "@/components/ui/skeleton";
 import BlogPostForm from "@/components/admin/BlogPostForm";
 import LyricsQuoteForm from "@/components/admin/LyricsQuoteForm";
 
@@ -77,7 +77,6 @@ const Content = () => {
 
   const fetchContent = async () => {
     try {
-      // Fetch blog posts
       const { data: posts, error: postsError } = await supabase
         .from("blog_posts")
         .select("*")
@@ -86,7 +85,6 @@ const Content = () => {
       if (postsError) throw postsError;
       setBlogPosts(posts || []);
 
-      // Fetch lyrics quotes
       const { data: quotes, error: quotesError } = await supabase
         .from("lyrics_quotes")
         .select("*")
@@ -133,8 +131,48 @@ const Content = () => {
     }
   };
 
-  if (!isAdmin) {
-    return <div>Loading...</div>;
+  if (!isAdmin || isLoading) {
+    return (
+      <div className="min-h-screen bg-primary">
+        <div className="flex">
+          <SidebarNav />
+          <main className="flex-1">
+            <div className="sticky top-0 z-10 bg-primary border-b border-gray-800 p-8">
+              <Skeleton className="h-10 w-56 bg-gray-800" />
+            </div>
+            <div className="p-8">
+              <div className="max-w-7xl mx-auto">
+                <div className="space-y-6">
+                  <Skeleton className="h-10 w-40 bg-gray-800" />
+                  <div className="space-y-4">
+                    <div className="flex justify-between items-center">
+                      <Skeleton className="h-8 w-32 bg-gray-800" />
+                      <Skeleton className="h-10 w-28 bg-gray-800" />
+                    </div>
+                    <div className="rounded-md border border-gray-800">
+                      <div className="p-4 space-y-3">
+                        {[...Array(5)].map((_, i) => (
+                          <div key={i} className="flex justify-between items-center">
+                            <div className="space-y-2">
+                              <Skeleton className="h-5 w-48 bg-gray-800" />
+                              <Skeleton className="h-4 w-32 bg-gray-800" />
+                            </div>
+                            <div className="flex gap-2">
+                              <Skeleton className="h-9 w-9 bg-gray-800" />
+                              <Skeleton className="h-9 w-9 bg-gray-800" />
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </main>
+        </div>
+      </div>
+    );
   }
 
   return (

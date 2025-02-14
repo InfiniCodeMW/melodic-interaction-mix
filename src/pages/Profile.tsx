@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
@@ -13,6 +12,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface Profile {
   username: string | null;
@@ -124,8 +124,39 @@ const Profile = () => {
     }
   };
 
-  if (isLoading) {
-    return <div>Loading...</div>;
+  if (isLoading || !profile) {
+    return (
+      <div className="min-h-screen bg-primary">
+        <div className="flex">
+          <SidebarNav />
+          <main className="flex-1">
+            <div className="sticky top-0 z-10 bg-primary border-b border-gray-800 p-8">
+              <Skeleton className="h-10 w-32 bg-gray-800" />
+            </div>
+            <div className="p-8">
+              <div className="max-w-2xl mx-auto">
+                <Card className="bg-gray-900/50 border-gray-800">
+                  <CardHeader>
+                    <div className="flex justify-between items-center">
+                      <Skeleton className="h-6 w-48 bg-gray-800" />
+                      <Skeleton className="h-10 w-28 bg-gray-800" />
+                    </div>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    {[...Array(3)].map((_, i) => (
+                      <div key={i} className="space-y-2">
+                        <Skeleton className="h-4 w-24 bg-gray-800" />
+                        <Skeleton className="h-10 w-full bg-gray-800" />
+                      </div>
+                    ))}
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+          </main>
+        </div>
+      </div>
+    );
   }
 
   return (

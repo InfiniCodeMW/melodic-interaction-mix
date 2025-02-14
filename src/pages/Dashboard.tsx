@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
@@ -8,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { FileText, Quote, MessageSquare, ThumbsUp } from "lucide-react";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
 import { format, subDays, parseISO } from 'date-fns';
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface ContentStats {
   blogPosts: number;
@@ -97,7 +97,6 @@ const Dashboard = () => {
 
   const fetchTimeSeriesData = async () => {
     try {
-      // Get data for the last 30 days
       const startDate = subDays(new Date(), 30);
       
       const { data: comments } = await supabase
@@ -110,16 +109,13 @@ const Dashboard = () => {
         .select("created_at")
         .gte("created_at", startDate.toISOString());
 
-      // Create a map of dates with initial counts
       const dateMap = new Map<string, { comments: number; likes: number }>();
       
-      // Initialize the last 30 days with 0 counts
       for (let i = 0; i < 30; i++) {
         const date = format(subDays(new Date(), i), 'yyyy-MM-dd');
         dateMap.set(date, { comments: 0, likes: 0 });
       }
 
-      // Count comments per day
       comments?.forEach((comment) => {
         const date = format(parseISO(comment.created_at), 'yyyy-MM-dd');
         if (dateMap.has(date)) {
@@ -128,7 +124,6 @@ const Dashboard = () => {
         }
       });
 
-      // Count likes per day
       likes?.forEach((like) => {
         const date = format(parseISO(like.created_at), 'yyyy-MM-dd');
         if (dateMap.has(date)) {
@@ -137,7 +132,6 @@ const Dashboard = () => {
         }
       });
 
-      // Convert map to array and sort by date
       const timeSeriesArray = Array.from(dateMap.entries())
         .map(([date, counts]) => ({
           date,
@@ -157,8 +151,49 @@ const Dashboard = () => {
     }
   };
 
-  if (!isAdmin) {
-    return <div>Loading...</div>;
+  if (!isAdmin || isLoading) {
+    return (
+      <div className="min-h-screen bg-primary">
+        <div className="flex">
+          <SidebarNav />
+          <main className="flex-1">
+            <div className="sticky top-0 z-10 bg-primary border-b border-gray-800 p-8">
+              <Skeleton className="h-10 w-48 bg-gray-800" />
+            </div>
+            <div className="p-8">
+              <div className="max-w-7xl mx-auto space-y-8">
+                <div className="grid gap-6 md:grid-cols-4">
+                  {[...Array(4)].map((_, i) => (
+                    <Card key={i} className="bg-gray-900/50 border-gray-800">
+                      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <Skeleton className="h-5 w-24 bg-gray-800" />
+                        <Skeleton className="h-4 w-4 bg-gray-800" />
+                      </CardHeader>
+                      <CardContent>
+                        <Skeleton className="h-8 w-16 mb-1 bg-gray-800" />
+                        <Skeleton className="h-4 w-32 bg-gray-800" />
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+                <div className="grid gap-6 md:grid-cols-2">
+                  {[...Array(2)].map((_, i) => (
+                    <Card key={i} className="bg-gray-900/50 border-gray-800">
+                      <CardHeader>
+                        <Skeleton className="h-6 w-48 bg-gray-800" />
+                      </CardHeader>
+                      <CardContent>
+                        <Skeleton className="h-[300px] w-full bg-gray-800" />
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </main>
+        </div>
+      </div>
+    );
   }
 
   return (
