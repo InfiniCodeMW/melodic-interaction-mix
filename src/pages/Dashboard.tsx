@@ -5,12 +5,21 @@ import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { SidebarNav } from "@/components/admin/SidebarNav";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { FileText, Quote, MessageSquare } from "lucide-react";
+import { FileText, Quote, MessageSquare, ThumbsUp } from "lucide-react";
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
+import { format, subDays, parseISO } from 'date-fns';
 
 interface ContentStats {
   blogPosts: number;
   lyricsQuotes: number;
   comments: number;
+  likes: number;
+}
+
+interface TimeSeriesData {
+  date: string;
+  comments: number;
+  likes: number;
 }
 
 const Dashboard = () => {
@@ -21,12 +30,15 @@ const Dashboard = () => {
     blogPosts: 0,
     lyricsQuotes: 0,
     comments: 0,
+    likes: 0,
   });
+  const [timeSeriesData, setTimeSeriesData] = useState<TimeSeriesData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     checkAdminStatus();
     fetchStats();
+    fetchTimeSeriesData();
   }, []);
 
   const checkAdminStatus = async () => {
@@ -60,17 +72,80 @@ const Dashboard = () => {
         { count: blogCount },
         { count: lyricsCount },
         { count: commentsCount },
+        { count: likesCount },
       ] = await Promise.all([
         supabase.from("blog_posts").select("*", { count: "exact", head: true }),
         supabase.from("lyrics_quotes").select("*", { count: "exact", head: true }),
         supabase.from("comments").select("*", { count: "exact", head: true }),
+        supabase.from("likes").select("*", { count: "exact", head: true }),
       ]);
 
       setStats({
         blogPosts: blogCount || 0,
         lyricsQuotes: lyricsCount || 0,
         comments: commentsCount || 0,
+        likes: likesCount || 0,
       });
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  };
+
+  const fetchTimeSeriesData = async () => {
+    try {
+      // Get data for the last 30 days
+      const startDate = subDays(new Date(), 30);
+      
+      const { data: comments } = await supabase
+        .from("comments")
+        .select("created_at")
+        .gte("created_at", startDate.toISOString());
+
+      const { data: likes } = await supabase
+        .from("likes")
+        .select("created_at")
+        .gte("created_at", startDate.toISOString());
+
+      // Create a map of dates with initial counts
+      const dateMap = new Map<string, { comments: number; likes: number }>();
+      
+      // Initialize the last 30 days with 0 counts
+      for (let i = 0; i < 30; i++) {
+        const date = format(subDays(new Date(), i), 'yyyy-MM-dd');
+        dateMap.set(date, { comments: 0, likes: 0 });
+      }
+
+      // Count comments per day
+      comments?.forEach((comment) => {
+        const date = format(parseISO(comment.created_at), 'yyyy-MM-dd');
+        if (dateMap.has(date)) {
+          const current = dateMap.get(date)!;
+          dateMap.set(date, { ...current, comments: current.comments + 1 });
+        }
+      });
+
+      // Count likes per day
+      likes?.forEach((like) => {
+        const date = format(parseISO(like.created_at), 'yyyy-MM-dd');
+        if (dateMap.has(date)) {
+          const current = dateMap.get(date)!;
+          dateMap.set(date, { ...current, likes: current.likes + 1 });
+        }
+      });
+
+      // Convert map to array and sort by date
+      const timeSeriesArray = Array.from(dateMap.entries())
+        .map(([date, counts]) => ({
+          date,
+          ...counts
+        }))
+        .sort((a, b) => a.date.localeCompare(b.date));
+
+      setTimeSeriesData(timeSeriesArray);
     } catch (error: any) {
       toast({
         title: "Error",
@@ -95,8 +170,8 @@ const Dashboard = () => {
             <h1 className="text-3xl font-bold text-white">Dashboard</h1>
           </div>
           <div className="p-8">
-            <div className="max-w-7xl mx-auto">
-              <div className="grid gap-6 md:grid-cols-3">
+            <div className="max-w-7xl mx-auto space-y-8">
+              <div className="grid gap-6 md:grid-cols-4">
                 <Card className="bg-gray-900/50 border-gray-800">
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <CardTitle className="text-sm font-medium text-white">
@@ -137,6 +212,102 @@ const Dashboard = () => {
                     <p className="text-xs text-muted-foreground">
                       Total user comments
                     </p>
+                  </CardContent>
+                </Card>
+                <Card className="bg-gray-900/50 border-gray-800">
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium text-white">
+                      Likes
+                    </CardTitle>
+                    <ThumbsUp className="h-4 w-4 text-muted-foreground" />
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold text-white">{stats.likes}</div>
+                    <p className="text-xs text-muted-foreground">
+                      Total content likes
+                    </p>
+                  </CardContent>
+                </Card>
+              </div>
+
+              <div className="grid gap-6 md:grid-cols-2">
+                <Card className="bg-gray-900/50 border-gray-800">
+                  <CardHeader>
+                    <CardTitle className="text-lg font-medium text-white">
+                      Comments Over Time
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="h-[300px]">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <AreaChart
+                          data={timeSeriesData}
+                          margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
+                        >
+                          <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+                          <XAxis 
+                            dataKey="date" 
+                            stroke="#9CA3AF"
+                            tickFormatter={(value) => format(parseISO(value), 'MMM dd')}
+                          />
+                          <YAxis stroke="#9CA3AF" />
+                          <Tooltip 
+                            contentStyle={{ 
+                              backgroundColor: '#1F2937',
+                              border: '1px solid #374151',
+                              borderRadius: '0.375rem',
+                              color: '#E5E7EB'
+                            }}
+                          />
+                          <Area
+                            type="monotone"
+                            dataKey="comments"
+                            stroke="#3B82F6"
+                            fill="#3B82F6"
+                            fillOpacity={0.2}
+                          />
+                        </AreaChart>
+                      </ResponsiveContainer>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card className="bg-gray-900/50 border-gray-800">
+                  <CardHeader>
+                    <CardTitle className="text-lg font-medium text-white">
+                      Likes Over Time
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="h-[300px]">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <BarChart
+                          data={timeSeriesData}
+                          margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
+                        >
+                          <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+                          <XAxis 
+                            dataKey="date" 
+                            stroke="#9CA3AF"
+                            tickFormatter={(value) => format(parseISO(value), 'MMM dd')}
+                          />
+                          <YAxis stroke="#9CA3AF" />
+                          <Tooltip 
+                            contentStyle={{ 
+                              backgroundColor: '#1F2937',
+                              border: '1px solid #374151',
+                              borderRadius: '0.375rem',
+                              color: '#E5E7EB'
+                            }}
+                          />
+                          <Bar
+                            dataKey="likes"
+                            fill="#10B981"
+                            radius={[4, 4, 0, 0]}
+                          />
+                        </BarChart>
+                      </ResponsiveContainer>
+                    </div>
                   </CardContent>
                 </Card>
               </div>
